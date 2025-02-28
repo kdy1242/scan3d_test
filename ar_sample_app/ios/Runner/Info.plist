@@ -16,6 +16,10 @@
 	<string>ar_sample_app</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+
+	<key>NSCameraUsageDescription</key>
+	<string>매물 및 방 사진을 촬영하기 위한 카메라 사용 권한을 요청합니다.</string>
+	
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
