@@ -5,6 +5,11 @@ class PlyObjectPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: Text('zzz'),
+      ),
+    );
   }
 }

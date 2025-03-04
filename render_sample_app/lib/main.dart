@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:render_sample_app/glb_object_page.dart';
+import 'package:render_sample_app/ply_object_page.dart';
 
 void main() => runApp(const MaterialApp(home: MyApp()));
 
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
     void goToPlyObjectPage() {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const GlbObjectPage()),
+        MaterialPageRoute(builder: (context) => const PlyObjectPage()),
       );
     }
 
