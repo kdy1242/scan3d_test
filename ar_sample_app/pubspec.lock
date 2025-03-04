@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.3"
+  arkit_plugin:
+    dependency: "direct main"
+    description:
+      name: arkit_plugin
+      sha256: c9492f41161ca667cf834ec1fdff686c044cd937313fe325589fadf318228560
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.2"
   async:
     dependency: transitive
     description:
@@ -367,4 +375,4 @@ packages:
     version: "14.2.1"
 sdks:
   dart: ">=3.4.3 <4.0.0"
-  flutter: ">=3.18.0-18.0.pre.54"
+  flutter: ">=3.19.0"

@@ -33,7 +33,7 @@ class _ObjectPageState extends State<ObjectPage> {
       appBar: AppBar(),
       body: ARView(onARViewCreated: onARViewCreated),
       floatingActionButton: FloatingActionButton(
-        onPressed: onWebObjectAtButtonPressed,
+        onPressed: addNode,
         child: Icon(isAdd ? Icons.remove : Icons.add),
       ),
     );
@@ -58,23 +58,6 @@ class _ObjectPageState extends State<ObjectPage> {
     this.arObjectManager.onInitialize();
   }
 
-  Future onLocalObjectButtonPressed() async {
-    if (localObjectNode != null) {
-      arObjectManager.removeNode(localObjectNode!);
-      localObjectNode = null;
-    } else {
-      var newNode = ARNode(
-        type: NodeType.localGLTF2,
-        uri: 'assets/scene.gltf',
-        scale: Vector3(0.2, 0.2, 0.2),
-        position: Vector3(0.0, 0.0, 0.0),
-        rotation: Vector4(1.0, 0.0, 0.0, 0.0),
-      );
-      bool? didAddLocalNode = await arObjectManager.addNode(newNode);
-      localObjectNode = (didAddLocalNode!) ? newNode : null;
-    }
-  }
-
   Future onWebObjectAtButtonPressed() async {
     setState(() {
       isAdd = !isAdd;
@@ -86,13 +69,15 @@ class _ObjectPageState extends State<ObjectPage> {
     } else {
       var newNode = ARNode(
         type: NodeType.webGLB,
-        uri: sample2,
+        uri: sample,
         scale: Vector3(0.2, 0.2, 0.2),
       );
       bool? didAddWebNode = await arObjectManager.addNode(newNode);
       webObjectNode = (didAddWebNode!) ? newNode : null;
     }
   }
+
+  void addNode() {}
 
   @override
   void dispose() {
