@@ -31,7 +31,9 @@ class _ArKitPageState extends State<ArKitPage> {
       cameraTransform,
     );
 
-    final vector.Vector3 position = cameraPosition - (backwardVector * 0.1);
+    final rotationVector = await arkitController.getCameraEulerAngles();
+
+    final vector.Vector3 nodePosition = cameraPosition - (backwardVector * 0.1);
 
     final box = ARKitBox(
       width: 0.05,
@@ -45,8 +47,6 @@ class _ArKitPageState extends State<ArKitPage> {
       ],
     );
 
-    final rotationVector = await arkitController.getCameraEulerAngles();
-
     final node = ARKitNode(
       geometry: box,
       eulerAngles: vector.Vector3(
@@ -54,7 +54,7 @@ class _ArKitPageState extends State<ArKitPage> {
         rotationVector.x,
         rotationVector.z,
       ),
-      position: position,
+      position: nodePosition,
     );
 
     arkitController.add(node);
