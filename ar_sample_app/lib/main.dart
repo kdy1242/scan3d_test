@@ -1,3 +1,4 @@
+import 'package:ar_sample_app/ar_core_page.dart';
 import 'package:ar_sample_app/ar_kit_page.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -12,10 +13,17 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  void goToARView() {
+  void goToARKitPage() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const ArKitPage()),
+    );
+  }
+
+  void goToARCorePage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ArCorePage()),
     );
   }
 
@@ -30,9 +38,18 @@ class _MyAppState extends State<MyApp> {
     return Scaffold(
       appBar: AppBar(),
       body: Center(
-        child: ElevatedButton(
-          onPressed: goToARView,
-          child: const Text('go'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: goToARKitPage,
+              child: const Text('ARKit (iOS)'),
+            ),
+            ElevatedButton(
+              onPressed: goToARCorePage,
+              child: const Text('ARCore (Android)'),
+            ),
+          ],
         ),
       ),
     );
