@@ -1,6 +1,12 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:arkit_plugin/arkit_plugin.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
+
+import 'package:image/image.dart' as img;
 
 class ArKitPage extends StatefulWidget {
   const ArKitPage({super.key});
@@ -11,13 +17,25 @@ class ArKitPage extends StatefulWidget {
 
 class _ArKitPageState extends State<ArKitPage> {
   late ARKitController arkitController;
-  final snapshots = [];
+  final images = [];
 
   void onARKitViewCreated(ARKitController controller) {
     arkitController = controller;
   }
 
-  void addNode() async {
+  void onButtonTap() async {
+    final imageProvider = await arkitController.getCapturedImage();
+
+    final file = await captureImage(imageProvider as MemoryImage);
+
+    setState(() {
+      images.add(file);
+    });
+
+    addNode();
+  }
+
+  Future<void> addNode() async {
     final rotationVector = await arkitController.getCameraEulerAngles();
     final nodePosition = await getNodePosition();
 
@@ -44,12 +62,30 @@ class _ArKitPageState extends State<ArKitPage> {
     );
 
     arkitController.add(node);
+  }
 
+  Future<File> captureImage(MemoryImage image) async {
     final imageProvider = await arkitController.getCapturedImage();
 
-    setState(() {
-      snapshots.add(imageProvider);
-    });
+    Uint8List imageBytes = (imageProvider as MemoryImage).bytes;
+
+    final file = await rotateImage(imageBytes);
+
+    return file;
+  }
+
+  Future<File> rotateImage(Uint8List imageBytes) async {
+    final image = img.decodeImage(imageBytes);
+
+    img.Image fixedImage;
+    fixedImage = img.copyRotate(image!, angle: 90);
+
+    final tempDir = await getTemporaryDirectory();
+    final file =
+        File('${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg');
+
+    final fixedFile = await file.writeAsBytes(img.encodeJpg(fixedImage));
+    return fixedFile;
   }
 
   Future<vector.Vector3?> getNodePosition() async {
@@ -115,15 +151,15 @@ class _ArKitPageState extends State<ArKitPage> {
           SizedBox(
             height: 200,
             child: ListView.separated(
-              itemCount: snapshots.length,
+              itemCount: images.length,
               scrollDirection: Axis.horizontal,
               shrinkWrap: true,
               itemBuilder: (context, index) {
                 return SizedBox(
                   height: 200,
                   width: 200,
-                  child: Image(
-                    image: snapshots[index],
+                  child: Image.file(
+                    images[index],
                     fit: BoxFit.contain,
                   ),
                 );
@@ -134,7 +170,7 @@ class _ArKitPageState extends State<ArKitPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: addNode,
+        onPressed: onButtonTap,
         child: const Icon(Icons.add),
       ),
     );
