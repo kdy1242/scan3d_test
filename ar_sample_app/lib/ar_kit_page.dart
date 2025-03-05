@@ -26,31 +26,44 @@ class _ArKitPageState extends State<ArKitPage> {
 
     if (cameraTransform == null || cameraPosition == null) return;
 
-    final vector.Vector3 forwardVector = vector.Vector3(0, 0, -1);
-    final vector.Vector3 adjustedForward =
-        _applyCameraRotation(forwardVector, cameraTransform);
-    final vector.Vector3 backwardVector = adjustedForward;
+    final vector.Vector3 backwardVector = _applyCameraRotation(
+      vector.Vector3(0, 0, 1),
+      cameraTransform,
+    );
+
     final vector.Vector3 position = cameraPosition - (backwardVector * 0.1);
 
+    final box = ARKitBox(
+      width: 0.05,
+      height: 0.03,
+      length: 0.002,
+      materials: [
+        ARKitMaterial(
+          diffuse: ARKitMaterialProperty.color(Colors.blue),
+          transparent: ARKitMaterialProperty.value(0.5),
+        ),
+      ],
+    );
+
+    final rotationVector = await arkitController.getCameraEulerAngles();
+
     final node = ARKitNode(
-      geometry: ARKitSphere(
-        radius: 0.03,
-        materials: [
-          ARKitMaterial(
-            diffuse: ARKitMaterialProperty.color(Colors.blue.withOpacity(0.5)),
-          ),
-        ],
+      geometry: box,
+      eulerAngles: vector.Vector3(
+        rotationVector.y,
+        rotationVector.x,
+        rotationVector.z,
       ),
       position: position,
     );
+
+    arkitController.add(node);
 
     final imageProvider = await arkitController.getCapturedImage();
 
     setState(() {
       snapshots.add(imageProvider);
     });
-
-    arkitController.add(node);
   }
 
   vector.Vector3 _applyCameraRotation(
@@ -87,7 +100,8 @@ class _ArKitPageState extends State<ArKitPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('ARKit Sphere Example')),
+      appBar: AppBar(backgroundColor: Colors.transparent),
+      extendBodyBehindAppBar: true,
       body: Column(
         children: [
           Expanded(
