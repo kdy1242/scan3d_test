@@ -18,22 +18,8 @@ class _ArKitPageState extends State<ArKitPage> {
   }
 
   void addNode() async {
-    final Matrix4? cameraTransform =
-        await arkitController.pointOfViewTransform();
-
-    final vector.Vector3? cameraPosition =
-        await arkitController.cameraPosition();
-
-    if (cameraTransform == null || cameraPosition == null) return;
-
-    final vector.Vector3 backwardVector = _applyCameraRotation(
-      vector.Vector3(0, 0, 1),
-      cameraTransform,
-    );
-
     final rotationVector = await arkitController.getCameraEulerAngles();
-
-    final vector.Vector3 nodePosition = cameraPosition - (backwardVector * 0.1);
+    final nodePosition = await getNodePosition();
 
     final box = ARKitBox(
       width: 0.05,
@@ -66,7 +52,24 @@ class _ArKitPageState extends State<ArKitPage> {
     });
   }
 
-  vector.Vector3 _applyCameraRotation(
+  Future<vector.Vector3?> getNodePosition() async {
+    final Matrix4? cameraTransform =
+        await arkitController.pointOfViewTransform();
+
+    final vector.Vector3? cameraPosition =
+        await arkitController.cameraPosition();
+
+    if (cameraTransform == null || cameraPosition == null) return null;
+
+    final vector.Vector3 backwardVector = applyCameraRotation(
+      vector.Vector3(0, 0, 1),
+      cameraTransform,
+    );
+
+    return cameraPosition - (backwardVector * 0.1);
+  }
+
+  vector.Vector3 applyCameraRotation(
     vector.Vector3 forward,
     Matrix4 cameraTransform,
   ) {
